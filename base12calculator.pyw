@@ -5,7 +5,7 @@ import subprocess
 import tkinter as tk
 
 # Program made By Jefik
-# Link on GitHub: https://github.com/Jefik37/base-12-converter
+# Link on GitHub: https://github.com/Jefik37/base-12-calculator
 
 def tentobase(numog):
     numog=str(numog)
