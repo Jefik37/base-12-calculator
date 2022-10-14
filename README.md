@@ -5,4 +5,4 @@ Simple base 12 calculator, written in python. There might be some bugs, but most
 
 Yes, it is a copy of the Windows calculator.
 
-It might not work on Mac and Linux because of the Clipboard button. If it doesn't, changing the copy() function around line 215 should fix it.
+It might not work on Mac and Linux because of the Clipboard button.
