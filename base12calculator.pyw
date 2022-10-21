@@ -424,9 +424,9 @@ hypativado=False
 
 def hyp(x=None):
     if not globals()['hypativado']:
-        globals()['hypativado']=True
-        botaohyp.configure(bg=teclas3act, activebackground=teclas3)
         cor=teclashyp
+        globals()['hypativado']=True
+        botaohyp.configure(bg=teclas3act, activebackground=teclas3, fg=cor, activeforeground=cor)
 
         if not shiftativado:
             botoes=['sin', 'sinh', 'addsinh'], ['cos', 'cosh', 'addcosh'], ['tan', 'tanh', 'addtanh']
@@ -434,7 +434,7 @@ def hyp(x=None):
             botoes=['sin', 'sinh⁻¹', 'addasinh'], ['cos', 'cosh⁻¹', 'addacosh'], ['tan', 'tanh⁻¹', 'addatanh']
     else:
         globals()['hypativado']=False
-        botaohyp.configure(bg=teclas, activebackground=teclas2)
+        botaohyp.configure(bg=teclas, activebackground=teclas2, fg='white', activeforeground='white')
         cor='white'
 
         if not shiftativado:
