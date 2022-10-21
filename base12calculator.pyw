@@ -1,14 +1,26 @@
 from math import sqrt
 from math import factorial as fact
+from math import log as ln
+
 from math import floor
 from math import ceil as cil
-from math import log as ln
+
 from math import sin as sinr
 from math import cos as cosr
 from math import tan as tanr
+
 from math import sinh as sinhr
 from math import cosh as coshr
 from math import tanh as tanhr
+
+from math import asin as asinr
+from math import acos as acosr
+from math import atan as atanr
+
+from math import asinh as asinhr
+from math import acosh as acoshr
+from math import atanh as atanhr
+
 from math import radians
 from math import degrees
 import subprocess
@@ -109,9 +121,9 @@ def basetoten(numog):
     if not erro:
         return str(newnum)
 
-trig=['sin', 'cos', 'tan', 'sinh', 'cosh', 'tanh']
-
 radianos=True
+
+trig=['sin', 'cos', 'tan', 'sinh', 'cosh', 'tanh']
 
 for i in trig:
     exec(f"""def {i}(x):
@@ -119,6 +131,15 @@ for i in trig:
         return({i}r(x))
     else:
         return({i}r(radians(x)))""")
+
+trig2=['asin', 'acos', 'atan', 'asinh', 'acosh', 'atanh']
+
+for i in trig2:
+    exec(f"""def {i}(x):
+    if radianos:
+        return({i}r(x))
+    else:
+        return(degrees({i}r(x)))""")
 
 def degree():
     if radianos:
@@ -162,7 +183,7 @@ def separarnum(x):
     numeros='0123456789↊↋;. eπ'
 
     simbolosproblematicos=['√', 'ᴇ', 'ln', 'log', 'fact', 'root', 'π', 'e',
-    'sinh', 'cosh', 'tanh', 'sin', 'cos', 'tan', 'abs', 'cil', 'floor']
+    'sinh', 'cosh', 'tanh', 'sin', 'cos', 'tan', 'abs', 'cil', 'floor', 'a']
 
     for i in simbolosproblematicos:
         x=x.replace(i, '@'+i)
@@ -201,14 +222,6 @@ def separarnum(x):
             listanumeros.append(x[i])
             x[i]=basetoten(x[i])
 
-    """if len(x)==2 and x[0] in simbolosproblematicos:
-        x[1]='('+x[1]+')'
-    else:
-        for i in range (0, len(x)-1): #arrumar raíz
-            if '√' in x[i] or 'ln' in x[i] or 'ᴇ' in x[i]:
-                x[i+1]='('+x[i+1]+')'"""
-    
-
     c=x
     x=(''.join(x))
     x=x.replace('√', 'sqrt')
@@ -232,6 +245,7 @@ def atualizarvisor(x=None):
             string=f'{eval(string):.14f}'
         except Exception as e:
             preview.delete(0, tk.END)
+        print(f'b10 {string = }')
         string=tentobase(string)
         #string=string[:len(visor.get())]
         string=string.replace('A', '↊')
@@ -342,7 +356,8 @@ botoesbasicos=[['inverse', '^(-1)'], ['multiplication', '*'], ['factorial', 'fac
 ['seven', '7'], ['eight', '8'], ['nine', '9'], ['dek', '↊'], ['el', '↋'], ['adde', 'e'], ['addpi', 'π'],
 ['mod', '%'], ['addlogyx', 'log(x, y)'], ['exp', 'ᴇ'], ['addcomma', ','], ['addroot', 'root(x, y)'], ['addlnx', 'ln('],
 ['addsin', 'sin('], ['addcos', 'cos('], ['addtan', 'tan('], ['modulo', 'abs('], ['addceil', 'ceil('], ['addfloor', 'floor('],
-['addsinh', 'sinh('], ['addcosh', 'cosh('], ['addtanh', 'tanh(']]
+['addsinh', 'sinh('], ['addcosh', 'cosh('], ['addtanh', 'tanh('], ['addasin', 'asin('], ['addacos', 'acos('], ['addatan', 'atan('],
+['addasinh', 'asinh('], ['addacosh', 'acosh('], ['addatanh', 'atanh(']]
 
 for i in botoesbasicos:
     exec(f'''def {i[0]}():
@@ -361,6 +376,7 @@ teclas2='#373b47'
 teclas3='#383f53'
 teclas3act='#303b5a'
 teclas2act='#262830'
+teclashyp='#f8eea7'
 corigual='#4cc2ff'
 corigualact='#42a1d4'
 corsimbigual='#2a6788'
@@ -374,12 +390,12 @@ botaohistorico=tk.Button(master=frm_cabecalho, text='↺', font='Calibre 19',
         bg=fundo, borderwidth=0, fg='white', activebackground=teclas2, activeforeground='white', command=abrirhistorico)
 botaohistorico.grid(row=0, column=2)
 
-botaomenu=tk.Button(master=frm_cabecalho, text=' ', font='Calibre 19', #≡
-        bg=fundo, borderwidth=0, fg='white', activebackground=teclas2, activeforeground='white', command=...)
+botaomenu=tk.Button(master=frm_cabecalho, text='📋', font='Calibre 19', #≡
+        bg=fundo, borderwidth=0, fg='white', activebackground=teclas2, activeforeground='white', command=copy)
 botaomenu.grid(row=0, column=0)
 
 tab_control = tk.Label(master=frm_cabecalho, bg=fundo)
-tab_control.grid(row=0, column=1, padx=208)
+tab_control.grid(row=0, column=1, padx=200)
 
 frm_visor=tk.Frame(borderwidth=3, width=20, bg=fundo)
 frm_visor.grid(row=1, column=0)
@@ -403,37 +419,69 @@ botaopontovirgula=tk.Button()
 botaoraiz=tk.Button()
 botaoquadrado=tk.Button()
 shiftativado=False
+hypativado=False
+
+
+def hyp(x=None):
+    if not globals()['hypativado']:
+        globals()['hypativado']=True
+        botaohyp.configure(bg=teclas3act, activebackground=teclas3)
+        cor=teclashyp
+
+        if not shiftativado:
+            botoes=['sin', 'sinh', 'addsinh'], ['cos', 'cosh', 'addcosh'], ['tan', 'tanh', 'addtanh']
+        else:
+            botoes=['sin', 'sinh⁻¹', 'addasinh'], ['cos', 'cosh⁻¹', 'addacosh'], ['tan', 'tanh⁻¹', 'addatanh']
+    else:
+        globals()['hypativado']=False
+        botaohyp.configure(bg=teclas, activebackground=teclas2)
+        cor='white'
+
+        if not shiftativado:
+            botoes=['sin', 'sin', 'addsin'], ['cos', 'cos', 'addcos'], ['tan', 'tan', 'addtan']
+        else:
+            botoes=['sin', 'sin⁻¹', 'addasin'], ['cos', 'cos⁻¹', 'addacos'], ['tan', 'tan⁻¹', 'addatan']
+
+    for i in botoes:
+        exec(f"botao{i[0]}.configure(text='{i[1]}', command={i[2]}, fg='{cor}')")
+
 def shift(x=None):
     if not globals()['shiftativado']:
         globals()['shiftativado']=True
         botaoshift.configure(bg=teclas3act, activebackground=teclas3)
-        botaoquadrado.configure(text='xʸ', command=exponentiation, bg=teclas3, activebackground=teclas3act)
-        botaoraiz.configure(text='ʸ√x', command=addroot, bg=teclas3, activebackground=teclas3act)
-        botaolnx.configure(text='logᵧx', command=addlogyx, bg=teclas3, activebackground=teclas3act)
-        botaoceil.configure(text='⌊x⌋', command=addfloor, bg=teclas3, activebackground=teclas3act)
 
-        botaosin.configure(text='sinh', command=addsinh, bg=teclas3, activebackground=teclas3act)
-        botaocos.configure(text='cosh', command=addcosh, bg=teclas3, activebackground=teclas3act)
-        botaotan.configure(text='tanh', command=addtanh, bg=teclas3, activebackground=teclas3act)
+        botoes1=[['quadrado', 'xʸ', 'exponentiation'], ['raiz', 'ʸ√x', 'addroot'],
+        ['lnx', 'logᵧx', 'addlogyx'], ['ceil', '⌊x⌋', 'addfloor'], ['pontovirgula', ',', 'addcomma']]
 
-        botaopontovirgula.configure(text=',', command=addcomma, bg=teclas3, activebackground=teclas3act)
+        botoestrig=['sin', 'sin⁻¹', 'addasin'], ['cos', 'cos⁻¹', 'addacos'], ['tan', 'tan⁻¹', 'addatan']
+        botoestrigh=['sin', 'sinh⁻¹', 'addasinh'], ['cos', 'cosh⁻¹', 'addacosh'], ['tan', 'tanh⁻¹', 'addatanh']
+        
+        cores=['teclas3', 'teclas3act', 'teclashyp']
 
     else:
         globals()['shiftativado']=False
         botaoshift.configure(bg=teclas, activebackground=teclas2)
-        botaoquadrado.configure(text='x²', command=square, bg=teclas, activebackground=teclas2)
-        botaoraiz.configure(text='²√x', command=squareroot, bg=teclas, activebackground=teclas2)
-        botaolnx.configure(text='lnx', command=addlnx, bg=teclas, activebackground=teclas2)
-        botaoceil.configure(text='⌈x⌉', command=addceil, bg=teclas, activebackground=teclas2)
 
-        botaosin.configure(text='sin', command=addsin, bg=teclas, activebackground=teclas2)
-        botaocos.configure(text='cos', command=addcos, bg=teclas, activebackground=teclas2)
-        botaotan.configure(text='tan', command=addtan, bg=teclas, activebackground=teclas2)
+        botoes1=[['quadrado', 'x²', 'square'], ['raiz', '²√x', 'squareroot'],
+        ['lnx', 'lnx', 'addlnx'], ['ceil', '⌈x⌉', 'addceil'], ['pontovirgula', ';', 'semi']]
 
-        botaopontovirgula.configure(text=';', command=semi, bg=teclas, activebackground=teclas2)
+        botoestrig=['sin', 'sin', 'addsin'], ['cos', 'cos', 'addcos'], ['tan', 'tan', 'addtan']
+        botoestrigh=['sin', 'sinh', 'addsinh'], ['cos', 'cosh', 'addcosh'], ['tan', 'tanh', 'addtanh']
+        
+        cores=['teclas', 'teclas2', '']
 
-keys=[[['📋', 'copia', copy], ['(', 'abreparenteses', parleft], [')', 'fechaparentess', parright], ['C', 'C', clear], ['⌫', 'deleta', delete]],
-[['¹⁄ₓ', 'inverso', inverse], ['±', 'maismenos', moreless], ['π', 'pi', addpi], ['e', 'e', adde], ['exp', 'exp', exp]],
+    for i in botoes1:
+        exec(f"botao{i[0]}.configure(text='{i[1]}', command={i[2]}, bg={cores[0]}, activebackground={cores[1]})")
+
+    if globals()['hypativado']:
+        for i in botoestrigh:
+            exec(f"botao{i[0]}.configure(text='{i[1]}', command={i[2]}, bg={cores[0]}, activebackground={cores[1]})")
+    else:
+        for i in botoestrig:
+            exec(f"botao{i[0]}.configure(text='{i[1]}', command={i[2]}, bg={cores[0]}, activebackground={cores[1]})")
+
+keys=[[['¹⁄ₓ', 'inverso', inverse], ['(', 'abreparenteses', parleft], [')', 'fechaparentess', parright], ['C', 'C', clear], ['⌫', 'deleta', delete]],
+[['hyp', 'hyp', hyp], ['±', 'maismenos', moreless], ['π', 'pi', addpi], ['e', 'e', adde], ['exp', 'exp', exp]],
 [['shift', 'shift', shift], ['mod', 'mod', mod], ['x!', 'fatorial', factorial],  ['|x|', 'modulo', modulo], ['÷', 'divisao', division]],
 [['x²', 'quadrado', square], ['²√x', 'raiz', squareroot], ['lnx', 'lnx', addlnx], ['⌈x⌉', 'ceil', addceil], ['*', 'vezes', multiplication]], #['logᵧx', 'logyx', addlogyx]
 [['sin', 'sin', addsin], ['9', '9', nine], ['↊', 'dec', dek], ['↋', 'el', el], ['-', 'menos', minus]],
@@ -453,5 +501,5 @@ for i in range (0, len(keys)):
 
 
 
-janelahistorico=tk.Text(master=window, width=35, height=12, font='Calibre 19', bg=teclas, fg='white')
+janelahistorico=tk.Text(master=window, width=35, height=14, font='Calibre 19', bg=teclas, fg='white')
 window.mainloop()
